@@ -82,7 +82,7 @@ project:
 
   installation:
     steps:
-      - git clone https://github.com/yourusername/agentic-stock-picker.git
+      - git clone https://github.com/yourusername/stock-picker.git
       - cd agentic-stock-picker
       - python -m venv venv
       - source venv/bin/activate  # Mac/Linux
@@ -152,3 +152,4 @@ project:
     - FinTech
     - Automation
     - OpenAI
+
