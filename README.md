@@ -1,54 +1,154 @@
-# StockPicker Crew
+project:
+  name: Agentic AI Stock Picker Crew
+  description: >
+    A multi-agent AI system built with CrewAI that discovers trending companies
+    in a given sector, performs deep financial research, selects the best
+    investment opportunity, and sends a push notification with the final decision.
 
-Welcome to the StockPicker Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+  overview:
+    workflow:
+      - Find trending companies in a sector using latest news
+      - Perform deep financial research on each company
+      - Analyze research and select best investment
+      - Send push notification with 1-line rationale
+      - Output full investment report
 
-## Installation
+  architecture:
+    framework: CrewAI
+    llm: openai/gpt-4o-mini
+    language: Python
+    tools:
+      - Pushover API (push notifications)
+      - Requests
+      - Pydantic
 
-Ensure you have Python >=3.10 <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+  agents:
+    - name: trending_company_finder
+      role: Financial News Analyst
+      goal: >
+        Read the latest news and find 2-3 trending companies
+        in the selected sector. Always choose new companies.
+      llm: openai/gpt-4o-mini
 
-First, if you haven't already, install uv:
+    - name: financial_researcher
+      role: Senior Financial Researcher
+      goal: >
+        Provide comprehensive financial and strategic analysis
+        for each trending company in a structured report.
+      llm: openai/gpt-4o-mini
 
-```bash
-pip install uv
-```
+    - name: stock_picker
+      role: Investment Decision Analyst
+      goal: >
+        Analyze research findings, select the best company,
+        send a push notification with the decision,
+        and produce a detailed investment report.
+      llm: openai/gpt-4o-mini
 
-Next, navigate to your project directory and install the dependencies:
+    - name: manager
+      role: Project Manager
+      goal: >
+        Delegate tasks between agents to achieve the final goal
+        of selecting the best company for investment.
 
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
+  tasks:
+    - name: find_trending_companies
+      description: >
+        Search latest news in {sector} and identify top trending companies.
+      output_file: output/trending_companies.json
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+    - name: research_trending_companies
+      description: >
+        Generate detailed financial research reports
+        for the trending companies.
+      output_file: output/research_report.json
 
-- Modify `src/stock_picker/config/agents.yaml` to define your agents
-- Modify `src/stock_picker/config/tasks.yaml` to define your tasks
-- Modify `src/stock_picker/crew.py` to add your own logic, tools and specific args
-- Modify `src/stock_picker/main.py` to add custom inputs for your agents and tasks
+    - name: pick_best_company
+      description: >
+        Analyze research reports, select the best company,
+        notify the user, and provide final justification.
+      output_file: output/decision.md
 
-## Running the Project
+  project_structure:
+    stock_picker:
+      - config/
+          - agents.yaml
+          - tasks.yaml
+      - tools/
+          - push_notification_tool.py
+      - crew.py
+      - main.py
+      - __init__.py
 
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+  installation:
+    steps:
+      - git clone https://github.com/yourusername/agentic-stock-picker.git
+      - cd agentic-stock-picker
+      - python -m venv venv
+      - source venv/bin/activate  # Mac/Linux
+      - venv\Scripts\activate     # Windows
+      - pip install crewai openai pydantic requests
 
-```bash
-$ crewai run
-```
+  environment_variables:
+    required:
+      - OPENAI_API_KEY
+      - PUSHOVER_USER
+      - PUSHOVER_TOKEN
+    example_mac_linux: |
+      export OPENAI_API_KEY="your_key"
+      export PUSHOVER_USER="your_user"
+      export PUSHOVER_TOKEN="your_token"
+    example_windows: |
+      setx OPENAI_API_KEY "your_key"
+      setx PUSHOVER_USER "your_user"
+      setx PUSHOVER_TOKEN "your_token"
 
-This command initializes the stock_picker Crew, assembling the agents and assigning them tasks as defined in your configuration.
+  execution:
+    command: python main.py
+    default_sector: Technology
+    behavior: >
+      Runs the full multi-agent workflow,
+      prints final decision,
+      sends push notification,
+      and saves structured outputs.
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+  outputs:
+    - output/trending_companies.json
+    - output/research_report.json
+    - output/decision.md
 
-## Understanding Your Crew
+  customization:
+    change_sector_in: main.py
+    example: |
+      inputs = {
+          "sector": "Healthcare",
+          "current_date": str(datetime.now())
+      }
 
-The stock_picker Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+  example_workflow:
+    - Trending Finder → Finds NVIDIA, Palantir, Snowflake
+    - Researcher → Builds detailed financial analysis
+    - Stock Picker → Selects best risk/reward opportunity
+    - Notification → Sends investment decision
 
-## Support
+  use_cases:
+    - AI agent orchestration demos
+    - FinTech automation
+    - Quant research experiments
+    - Portfolio projects
+    - AI engineering showcases
 
-For support, questions, or feedback regarding the StockPicker Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+  license: MIT
 
-Let's create wonders together with the power and simplicity of crewAI.
+  contributions: >
+    Pull requests and forks are welcome.
+    Extend with additional agents, scoring models,
+    real financial APIs, or deployment automation.
+
+  tags:
+    - AI
+    - Multi-Agent Systems
+    - CrewAI
+    - FinTech
+    - Automation
+    - OpenAI
